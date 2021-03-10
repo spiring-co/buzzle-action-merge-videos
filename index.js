@@ -1,7 +1,8 @@
 const concat = require("ffmpeg-concat");
 const path = require('path');
 
-module.exports = (job, settings, { input, input2, output }) => {
+module.exports = (job, settings, { input, input2, output, onStart, onComplete }) => {
+  onStart()
   return new Promise((resolve, reject) => {
     input = input || job.output;
     output = output || "mergedVideo.mp4";
@@ -31,10 +32,12 @@ module.exports = (job, settings, { input, input2, output }) => {
       .then((result) => {
         console.log(result);
         job.output = output;
+        onComplete()
         resolve(output);
       })
       .catch((err) => {
         console.log(err);
+        onComplete()
         reject(err);
       });
   });
