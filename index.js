@@ -91,13 +91,13 @@ module.exports = (job, settings, { input, input2, output, onStart, onComplete })
     getBinary(job, settings).then(async (p) => {
       ffmpeg.setFfmpegPath(p);
       const videoDetails = (await ffprobe(input, { path: ffprobeStatic.path })).streams.find(({ codec_type }) => codec_type === 'video')
-      const video1Details = (await ffprobe(input2, { path: ffprobeStatic.path })).streams.find((({ codec_type }) => codec_type === 'video'))
-      if (videoDetails.width === video1Details.width && videoDetails.height === video1Details.height) {
+      const openingVideo = (await ffprobe(input2, { path: ffprobeStatic.path })).streams.find((({ codec_type }) => codec_type === 'video'))
+      if (videoDetails.width === openingVideo.width && videoDetails.height === openingVideo.height) {
         // run ffmpeg directly
         ffmpeg()
           .input(input2)
           .input(input)
-          .outputOptions([`-r ${video1Details.r_frame_rate || 24}`])
+          .outputOptions([`-r ${videoDetails.r_frame_rate || 24}`])
           .complexFilter('concat=n=2:v=1:a=1')
           .on("error", function (err, stdout, stderr) {
             settings.logger.log("join thumbnail video failed: " + err.message);
