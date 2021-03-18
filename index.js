@@ -95,8 +95,8 @@ module.exports = (job, settings, { input, input2, output, onStart, onComplete })
       if (videoDetails.width === video1Details.width && videoDetails.height === video1Details.height) {
         // run ffmpeg directly
         ffmpeg()
-          .input(input)
           .input(input2)
+          .input(input)
           .outputOptions([`-r ${video1Details.r_frame_rate || 24}`])
           .complexFilter('concat=n=2:v=1:a=1')
           .on("error", function (err, stdout, stderr) {
