@@ -100,7 +100,8 @@ module.exports = (job, settings, { input, input2, output, onStart, onComplete })
           .outputOptions([`-r ${videoDetails.r_frame_rate || 24}`])
           .complexFilter('concat=n=2:v=1:a=1')
           .on("error", function (err, stdout, stderr) {
-            settings.logger.log("join thumbnail video failed: " + err.message);
+            settings.logger.log("merging video failed: " + err.message);
+            settings.logger.log("merge video stderr: " + stderr);
             onComplete()
             reject(err);
           })
